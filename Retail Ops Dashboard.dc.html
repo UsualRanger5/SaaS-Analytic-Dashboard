@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/broadsheet-a80d9156-d1a2-498e-a7f7-db7d0e416186/styles.css">
+<script src="_ds/broadsheet-a80d9156-d1a2-498e-a7f7-db7d0e416186/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<meta name="darkreader-lock">
+<meta name="color-scheme" content="light only">
+<style>
+:root{color-scheme:light only}
+body{margin:0;background:var(--color-bg)}
+.btn-primary{background:var(--color-accent-700)}
+.btn-primary:hover{background:var(--color-accent-800)}
+.btn-primary:active{background:var(--color-accent-900)}
+.seg-opt:has(input:checked){background:var(--color-accent-700)}
+a{color:var(--color-accent-700)}
+a:hover{color:var(--color-accent-800)}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body);">
+
+<header style="max-width:1440px;margin:0 auto;padding:18px clamp(20px,3vw,48px) 0;display:flex;align-items:center;gap:28px;flex-wrap:wrap;position:relative;">
+  <div style="display:flex;align-items:baseline;gap:8px;">
+    <span style="font-family:var(--font-heading);font-weight:600;font-size:24px;letter-spacing:-0.02em;">The Manifest</span>
+    <span style="font-size:12px;font-style:italic;color:var(--color-neutral-700);">retail operations</span>
+  </div>
+  <nav style="display:flex;gap:22px;flex:1 1 auto;overflow-x:auto;min-width:0;">
+    <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="6">
+      <a href="#" aria-current="{{ l.current }}" style="font-size:15px;text-decoration:none;white-space:nowrap;color:{{ l.color }};padding:6px 0;border-bottom:2px solid {{ l.bar }};" style-hover="color:var(--color-accent-700)">{{ l.label }}</a>
+    </sc-for>
+  </nav>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <label style="position:relative;display:flex;align-items:center;">
+      <i class="ph-duotone ph-magnifying-glass" style="position:absolute;left:10px;font-size:16px;color:var(--color-neutral-700);"></i>
+      <input class="input" value="{{ q }}" onChange="{{ onSearch }}" placeholder="Search SKUs, products…" style="width:220px;padding-left:32px;background:transparent;">
+    </label>
+    <button class="btn btn-icon" aria-label="Notifications" onClick="{{ toggleNotif }}" style="position:relative;font-size:20px;" style-hover="background:color-mix(in srgb, var(--color-text) 7%, transparent)">
+      <i class="ph-duotone ph-bell"></i>
+      <span style="position:absolute;top:4px;right:4px;min-width:16px;height:16px;border-radius:8px;background:var(--color-accent-2);color:var(--color-bg);font-size:10px;line-height:16px;text-align:center;font-weight:600;">{{ notifCount }}</span>
+    </button>
+    <div style="width:34px;height:34px;border-radius:50%;background:var(--color-neutral-300);display:grid;place-items:center;font-size:13px;font-weight:600;">DO</div>
+  </div>
+  <sc-if value="{{ notifOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;right:clamp(20px,3vw,48px);top:64px;width:min(380px,calc(100vw - 40px));background:var(--color-bg);box-shadow:var(--shadow-lg);border-radius:var(--radius-lg);padding:20px;z-index:40;display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:18px;">Alerts</span>
+        <button class="btn btn-ghost" onClick="{{ toggleNotif }}" style="font-size:13px;">Close</button>
+      </div>
+      <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="4">
+        <button onClick="{{ n.open }}" style="all:unset;cursor:pointer;display:grid;grid-template-columns:22px 1fr;gap:10px;padding:6px;margin:-6px;border-radius:var(--radius-md);" style-hover="background:color-mix(in srgb, var(--color-accent) 8%, transparent)">
+          <i class="ph-duotone {{ n.icon }}" style="font-size:20px;color:{{ n.color }};"></i>
+          <span style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-size:14px;line-height:1.35;">{{ n.title }}</span>
+            <span style="font-size:12px;color:var(--color-neutral-700);">{{ n.meta }}</span>
+          </span>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+</header>
+
+<div style="max-width:1440px;margin:14px auto 0;padding:0 clamp(20px,3vw,48px);">
+  <div style="border-top:3px solid var(--color-text);padding-top:2px;">
+    <div style="border-top:1px solid var(--color-text);border-bottom:1px solid var(--color-text);padding:7px 0;display:flex;flex-wrap:wrap;gap:6px 24px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;">
+      <span>Saturday, 26 September 2026</span>
+      <span>Northwind Retail · US</span>
+      <span style="color:var(--color-neutral-700);">Data synced 4 min ago · 6 sources</span>
+      <span style="margin-left:auto;color:var(--color-accent-700);">{{ roleName }} edition</span>
+    </div>
+  </div>
+</div>
+
+<main style="max-width:1440px;margin:0 auto;padding:28px clamp(20px,3vw,48px) 80px;display:flex;flex-direction:column;gap:56px;">
+
+<section style="display:flex;flex-direction:column;gap:22px;">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px 28px;">
+    <div style="flex:1 1 320px;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:6px;">Overview</div>
+      <h1 style="margin:0;font-size:40px;">Performance, {{ rangeLabel }}</h1>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+      <span style="font-size:12px;color:var(--color-neutral-700);">Saved view</span>
+      <div class="seg" role="radiogroup" aria-label="Saved view">
+        <sc-for list="{{ roles }}" as="r" hint-placeholder-count="3">
+          <label class="seg-opt"><input type="radio" name="role" checked="{{ r.checked }}" onChange="{{ r.pick }}"><i class="ph-duotone {{ r.icon }}"></i>{{ r.label }}</label>
+        </sc-for>
+      </div>
+      <button class="btn btn-secondary" onClick="{{ toggleCustomize }}"><i class="ph-duotone {{ customizeIcon }}"></i>{{ customizeLabel }}</button>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;">
+    <select class="input" aria-label="Workspace" style="width:auto;background:transparent;">
+      <option>Northwind Retail — US</option>
+      <option>Northwind Retail — EU</option>
+      <option>Northwind Outlet</option>
+    </select>
+    <i class="ph-duotone ph-caret-right" style="color:var(--color-neutral-500);"></i>
+    <div class="seg" role="radiogroup" aria-label="Date range">
+      <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="4">
+        <label class="seg-opt"><input type="radio" name="range" checked="{{ r.checked }}" onChange="{{ r.pick }}">{{ r.k }}</label>
+      </sc-for>
+    </div>
+    <label class="radio" style="font-size:13px;gap:6px;">
+      <input type="checkbox" checked="{{ compare }}" onChange="{{ toggleCompare }}" style="accent-color:var(--color-accent);width:15px;height:15px;margin:0;">
+      Compare to previous period
+    </label>
+    <i class="ph-duotone ph-caret-right" style="color:var(--color-neutral-500);"></i>
+    <button class="btn btn-secondary" onClick="{{ toggleFilters }}" aria-expanded="{{ filtersOpen }}"><i class="ph-duotone ph-funnel"></i>Filters<span style="font-size:12px;color:var(--color-accent-700);">{{ filterCountLabel }}</span></button>
+    <sc-for list="{{ activeFilters }}" as="f" hint-placeholder-count="0">
+      <button class="tag tag-accent" onClick="{{ f.remove }}" style="border:0;cursor:pointer;gap:6px;font-family:inherit;">{{ f.label }}<i class="ph-duotone ph-x"></i></button>
+    </sc-for>
+    <div style="margin-left:auto;display:flex;gap:10px;">
+      <button class="btn btn-ghost" onClick="{{ refresh }}"><i class="ph-duotone ph-arrows-clockwise"></i>Refresh</button>
+      <button class="btn btn-primary" onClick="{{ openExport }}"><i class="ph-duotone ph-export"></i>Export &amp; share</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ filtersOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;gap:24px 48px;padding:20px 0 4px;">
+      <sc-for list="{{ filterGroups }}" as="g" hint-placeholder-count="2">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);">{{ g.label }}</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+              <button onClick="{{ o.toggle }}" aria-pressed="{{ o.on }}" style="font-family:inherit;font-size:13px;cursor:pointer;padding:5px 12px;border-radius:var(--radius-md);border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.ink }};" style-hover="border-color:var(--color-accent)">{{ o.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <div style="display:flex;align-items:flex-end;gap:8px;">
+        <button class="btn btn-ghost" onClick="{{ clearFilters }}">Clear all</button>
+      </div>
+    </div>
+  </sc-if>
+</section>
+
+<sc-if value="{{ showBrief }}" hint-placeholder-val="{{ true }}">
+<section style="display:grid;grid-template-columns:minmax(0,1fr);gap:10px;max-width:980px;">
+  <div style="display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);"><i class="ph-duotone ph-sparkle" style="font-size:16px;"></i>The brief · generated from 6 sources</div>
+  <p style="margin:0;font-family:var(--font-heading);font-size:clamp(24px,2.6vw,34px);line-height:1.22;letter-spacing:-0.015em;text-wrap:pretty;">{{ brief.lead }} <em style="font-weight:400;color:var(--color-accent-2-700);">{{ brief.turn }}</em></p>
+</section>
+</sc-if>
+
+<section aria-label="Key metrics">
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:40px;">
+      <sc-for list="{{ skel4 }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="height:12px;width:40%;background:var(--color-neutral-200);border-radius:var(--radius-md);"></div>
+          <div style="height:44px;width:75%;background:var(--color-neutral-200);border-radius:var(--radius-md);"></div>
+          <div style="height:12px;width:60%;background:var(--color-neutral-200);border-radius:var(--radius-md);"></div>
+          <div style="height:32px;width:100%;background:var(--color-neutral-100);border-radius:var(--radius-md);"></div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+  <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:40px;">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:8px;position:relative;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:14px;">{{ k.label }}</span>
+            <button onClick="{{ k.toggleInfo }}" aria-label="How {{ k.label }} is calculated" style="all:unset;cursor:pointer;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;color:var(--color-accent-700);" style-hover="background:var(--color-accent-100)"><i class="ph-duotone ph-info" style="font-size:16px;"></i></button>
+            <span style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:{{ k.st.ink }};"><span style="width:8px;height:8px;border-radius:50%;background:{{ k.st.dot }};border:1.5px solid {{ k.st.ring }};"></span>{{ k.st.label }}</span>
+          </div>
+          <div style="font-family:var(--font-heading);font-weight:600;font-size:clamp(34px,3.2vw,44px);line-height:1;letter-spacing:-0.025em;font-variant-numeric:lining-nums tabular-nums;">{{ k.value }}</div>
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;">
+            <span class="tag" style="background:{{ k.badgeBg }};color:{{ k.badgeInk }};font-weight:600;">{{ k.arrow }} {{ k.delta }}</span>
+            <span style="font-size:12px;color:var(--color-neutral-700);">vs prev. {{ rangeShort }}</span>
+          </div>
+          <svg viewBox="0 0 200 36" preserveAspectRatio="none" style="width:100%;height:36px;overflow:visible;" aria-hidden="true">
+            <path d="{{ k.spark }}" style="fill:none;stroke:{{ k.sparkInk }};stroke-width:1.6;vector-effect:non-scaling-stroke;"></path>
+          </svg>
+          <span style="font-size:12px;color:var(--color-neutral-700);">{{ k.target }}</span>
+          <sc-if value="{{ k.infoOpen }}" hint-placeholder-val="{{ false }}">
+            <div role="tooltip" style="position:absolute;top:30px;left:0;z-index:20;width:min(290px,90vw);background:var(--color-bg);box-shadow:var(--shadow-md);border-radius:var(--radius-lg);padding:14px 16px;display:flex;flex-direction:column;gap:6px;">
+              <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-700);">How it's calculated</span>
+              <span style="font-size:14px;line-height:1.45;">{{ k.formula }}</span>
+              <span style="font-size:12px;color:var(--color-neutral-700);">{{ k.source }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px;">
+  <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
+    <h2 style="margin:0;font-size:28px;">What changed</h2>
+    <span style="font-size:13px;color:var(--color-neutral-700);">Ranked by revenue impact · {{ insightMeta }}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:8px 48px;">
+    <sc-for list="{{ insights }}" as="i" hint-placeholder-count="4">
+      <button onClick="{{ i.open }}" style="all:unset;cursor:pointer;display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 14px;padding:14px 12px;margin:0 -12px;border-radius:var(--radius-md);align-items:start;" style-hover="background:color-mix(in srgb, var(--color-accent) 7%, transparent)">
+        <i class="ph-duotone {{ i.icon }}" style="font-size:24px;color:{{ i.color }};margin-top:2px;"></i>
+        <span style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+          <span style="font-family:var(--font-heading);font-weight:600;font-size:18px;line-height:1.25;text-wrap:pretty;">{{ i.title }}</span>
+          <span style="font-size:14px;line-height:1.45;color:var(--color-neutral-800);text-wrap:pretty;">{{ i.short }}</span>
+          <span style="font-size:12px;color:var(--color-neutral-700);">{{ i.reviewedLabel }}</span>
+        </span>
+        <span style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <span class="tag" style="background:{{ i.badgeBg }};color:{{ i.badgeInk }};font-weight:600;white-space:nowrap;">{{ i.delta }}</span>
+          <span style="font-size:13px;color:var(--color-accent-700);display:flex;align-items:center;gap:4px;white-space:nowrap;">Explain<i class="ph-duotone ph-arrow-right"></i></span>
+        </span>
+      </button>
+    </sc-for>
+  </div>
+</section>
+
+<section style="display:flex;flex-wrap:wrap;gap:40px 56px;align-items:flex-start;">
+  <div style="flex:2 1 560px;min-width:0;display:flex;flex-direction:column;gap:18px;">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 24px;">
+      <div style="flex:1 1 260px;">
+        <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Primary analysis</div>
+        <h2 style="margin:0;font-size:28px;">Multi-channel {{ metricLabel }}</h2>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-top:8px;flex-wrap:wrap;">
+          <span style="font-family:var(--font-heading);font-weight:600;font-size:26px;font-variant-numeric:tabular-nums;">{{ chart.totalText }}</span>
+          <span class="tag" style="background:{{ chart.badgeBg }};color:{{ chart.badgeInk }};font-weight:600;">{{ chart.deltaText }}</span>
+          <span style="font-size:13px;color:var(--color-neutral-700);">{{ chart.channelLabel }}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="seg" role="radiogroup" aria-label="Metric">
+          <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="2">
+            <label class="seg-opt"><input type="radio" name="metric" checked="{{ m.checked }}" onChange="{{ m.pick }}">{{ m.label }}</label>
+          </sc-for>
+        </div>
+        <select class="input" value="{{ channel }}" onChange="{{ onChannel }}" aria-label="Channel" style="width:auto;background:transparent;">
+          <sc-for list="{{ channelOpts }}" as="c" hint-placeholder-count="5">
+            <option value="{{ c.k }}">{{ c.label }}</option>
+          </sc-for>
+        </select>
+      </div>
+    </div>
+
+    <sc-if value="{{ chartState.loading }}" hint-placeholder-val="{{ false }}">
+      <div style="height:320px;background:var(--color-neutral-100);border-radius:var(--radius-md);display:grid;place-items:center;font-size:14px;color:var(--color-neutral-700);">Loading channel data…</div>
+    </sc-if>
+    <sc-if value="{{ chartState.error }}" hint-placeholder-val="{{ false }}">
+      <div style="height:320px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px;padding:0 8%;">
+        <i class="ph-duotone ph-plugs" style="font-size:36px;color:var(--color-accent-2);"></i>
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:22px;">Amazon Seller Central stopped responding</span>
+        <span style="font-size:14px;max-width:460px;color:var(--color-neutral-800);">The last sync at 09:12 timed out, so revenue for this channel is incomplete. Other channels are current. Totals would understate revenue by roughly 28%, so we've held the chart rather than show a misleading line.</span>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button class="btn btn-primary" onClick="{{ retry }}"><i class="ph-duotone ph-arrows-clockwise"></i>Retry sync</button>
+          <button class="btn btn-secondary">View integration status</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ chartState.empty }}" hint-placeholder-val="{{ false }}">
+      <div style="height:320px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px;padding:0 8%;">
+        <i class="ph-duotone ph-chart-line" style="font-size:36px;color:var(--color-neutral-500);"></i>
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:22px;">No orders in this range yet</span>
+        <span style="font-size:14px;max-width:440px;color:var(--color-neutral-800);">This workspace was connected today. The first sync usually finishes within an hour, and history back to January is backfilled overnight.</span>
+        <button class="btn btn-secondary" style="margin-top:6px;">Connect another channel</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ chartState.ready }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 10px;">
+        <div style="position:relative;height:300px;">
+          <sc-for list="{{ chart.yTicks }}" as="t" hint-placeholder-count="5">
+            <span style="position:absolute;right:0;top:{{ t.top }}%;transform:translateY(-50%);font-size:11px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;">{{ t.label }}</span>
+          </sc-for>
+        </div>
+        <div onPointerMove="{{ onChartMove }}" onPointerDown="{{ onChartMove }}" onPointerLeave="{{ onChartLeave }}" style="position:relative;height:300px;touch-action:pan-y;cursor:crosshair;">
+          <sc-for list="{{ chart.yTicks }}" as="t" hint-placeholder-count="5">
+            <div style="position:absolute;left:0;right:0;top:{{ t.top }}%;border-top:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);"></div>
+          </sc-for>
+          <svg viewBox="0 0 1000 300" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible;" aria-label="Revenue over time chart">
+            <path d="{{ chart.area }}" style="fill:var(--color-accent-100);opacity:0.8;"></path>
+            <sc-if value="{{ compare }}" hint-placeholder-val="{{ true }}">
+              <path d="{{ chart.prevLine }}" style="fill:none;stroke:var(--color-neutral-500);stroke-width:1.5;stroke-dasharray:5 5;vector-effect:non-scaling-stroke;"></path>
+            </sc-if>
+            <path d="{{ chart.line }}" style="fill:none;stroke:{{ chart.lineInk }};stroke-width:2.25;vector-effect:non-scaling-stroke;stroke-linejoin:round;"></path>
+          </svg>
+          <sc-if value="{{ chart.anomaly.show }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:0;bottom:0;left:{{ chart.anomaly.left }}%;border-left:1px dashed var(--color-accent-2);"></div>
+            <button onClick="{{ openAnomaly }}" style="position:absolute;top:6px;left:{{ chart.anomaly.left }}%;transform:translateX(-50%);font-family:inherit;font-size:12px;cursor:pointer;background:var(--color-accent-2-100);color:var(--color-accent-2-800);border:0;border-radius:var(--radius-md);padding:4px 9px;display:flex;align-items:center;gap:5px;white-space:nowrap;" style-hover="background:var(--color-accent-2-200)"><i class="ph-duotone ph-warning-diamond"></i>Anomaly · Amazon −23%</button>
+          </sc-if>
+          <sc-if value="{{ chart.hover.show }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:0;bottom:0;left:{{ chart.hover.left }}%;border-left:1px solid var(--color-text);pointer-events:none;"></div>
+            <div style="position:absolute;left:{{ chart.hover.left }}%;top:{{ chart.hover.top }}%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:var(--color-bg);border:2px solid {{ chart.lineInk }};pointer-events:none;"></div>
+            <div style="position:absolute;top:40px;left:{{ chart.hover.left }}%;transform:translateX({{ chart.hover.shift }});margin:0 12px;background:var(--color-bg);box-shadow:var(--shadow-md);border-radius:var(--radius-lg);padding:10px 14px;pointer-events:none;min-width:170px;display:flex;flex-direction:column;gap:4px;">
+              <span style="font-size:12px;color:var(--color-neutral-700);">{{ chart.hover.date }}</span>
+              <span style="font-family:var(--font-heading);font-weight:600;font-size:20px;font-variant-numeric:tabular-nums;">{{ chart.hover.cur }}</span>
+              <span style="font-size:12px;color:var(--color-neutral-700);">Prev. period {{ chart.hover.prev }}</span>
+              <span style="font-size:12px;font-weight:600;color:{{ chart.hover.deltaInk }};">{{ chart.hover.delta }}</span>
+            </div>
+          </sc-if>
+        </div>
+        <div></div>
+        <div style="position:relative;height:24px;margin-top:6px;">
+          <sc-for list="{{ chart.xTicks }}" as="t" hint-placeholder-count="6">
+            <span style="position:absolute;left:{{ t.left }}%;transform:translateX({{ t.shift }});font-size:11px;color:var(--color-neutral-700);white-space:nowrap;">{{ t.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12px;color:var(--color-neutral-800);padding-left:62px;">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:18px;border-top:2.5px solid {{ chart.lineInk }};"></span>This period</span>
+        <sc-if value="{{ compare }}" hint-placeholder-val="{{ true }}"><span style="display:flex;align-items:center;gap:6px;"><span style="width:18px;border-top:1.5px dashed var(--color-neutral-500);"></span>Previous period</span></sc-if>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:0;height:12px;border-left:1px dashed var(--color-accent-2);"></span>Detected anomaly</span>
+        <span style="margin-left:auto;font-style:italic;">Tap or hover the chart for daily values</span>
+      </div>
+    </sc-if>
+  </div>
+
+  <aside style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:16px;">
+    <div>
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Channel attribution</div>
+      <h3 style="margin:0;font-size:22px;">Where revenue came from</h3>
+    </div>
+    <sc-for list="{{ channelMix }}" as="c" hint-placeholder-count="4">
+      <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin:0 -12px;border-radius:var(--radius-md);background:{{ c.bg }};" style-hover="background:color-mix(in srgb, var(--color-accent) 7%, transparent)">
+        <span style="display:flex;align-items:baseline;gap:10px;">
+          <span style="font-size:15px;font-weight:600;">{{ c.label }}</span>
+          <span style="font-size:12px;color:var(--color-neutral-700);">{{ c.share }}</span>
+          <span style="margin-left:auto;font-variant-numeric:tabular-nums;font-size:15px;">{{ c.value }}</span>
+          <span style="font-size:12px;font-weight:600;min-width:52px;text-align:right;color:{{ c.deltaInk }};">{{ c.delta }}</span>
+        </span>
+        <span style="height:6px;background:var(--color-neutral-200);border-radius:var(--radius-sm);overflow:hidden;"><span style="display:block;height:100%;width:{{ c.pct }}%;background:{{ c.barInk }};"></span></span>
+      </button>
+    </sc-for>
+    <p style="margin:4px 0 0;font-size:13px;line-height:1.5;color:var(--color-neutral-800);">Last-click attribution across Shopify, Amazon, POS and wholesale EDI. Select a channel to plot it on the chart.</p>
+  </aside>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:22px;">
+  <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;">
+    <h2 style="margin:0;font-size:28px;">Supporting detail</h2>
+    <span style="font-size:13px;color:var(--color-neutral-700);">{{ supportHint }}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:48px 56px;">
+
+    <sc-if value="{{ mods.roas.show }}" hint-placeholder-val="{{ true }}">
+    <div style="order:{{ mods.roas.order }};display:flex;flex-direction:column;gap:14px;outline:{{ mods.roas.outline }};outline-offset:12px;border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Ad platforms</div>
+          <h3 style="margin:0;font-size:21px;">Return on ad spend</h3>
+        </div>
+        <sc-if value="{{ customize }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:2px;">
+            <button class="btn btn-icon" aria-label="Move earlier" onClick="{{ mods.roas.up }}"><i class="ph-duotone ph-arrow-up"></i></button>
+            <button class="btn btn-icon" aria-label="Move later" onClick="{{ mods.roas.down }}"><i class="ph-duotone ph-arrow-down"></i></button>
+            <button class="btn btn-icon" aria-label="Hide" onClick="{{ mods.roas.hide }}"><i class="ph-duotone ph-eye-slash"></i></button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-for list="{{ roasRows }}" as="r" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;align-items:baseline;gap:8px;font-size:14px;">
+            <span>{{ r.label }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ r.sub }}</span>
+            <span style="margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums;color:{{ r.ink }};">{{ r.valueText }}</span>
+          </div>
+          <div style="position:relative;height:8px;background:var(--color-neutral-200);border-radius:var(--radius-sm);">
+            <div style="height:100%;width:{{ r.pct }}%;background:{{ r.bar }};border-radius:var(--radius-sm);"></div>
+            <div style="position:absolute;top:-4px;bottom:-4px;left:{{ roasTarget }}%;border-left:1.5px solid var(--color-text);"></div>
+          </div>
+        </div>
+      </sc-for>
+      <span style="font-size:12px;color:var(--color-neutral-700);">Rule marks the 3.0× target. Below 2.5× a platform loses money after COGS and fulfillment.</span>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ mods.inventory.show }}" hint-placeholder-val="{{ true }}">
+    <div style="order:{{ mods.inventory.order }};display:flex;flex-direction:column;gap:14px;outline:{{ mods.inventory.outline }};outline-offset:12px;border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Inventory health</div>
+          <h3 style="margin:0;font-size:21px;">Stock turnover by category</h3>
+        </div>
+        <sc-if value="{{ customize }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:2px;">
+            <button class="btn btn-icon" aria-label="Move earlier" onClick="{{ mods.inventory.up }}"><i class="ph-duotone ph-arrow-up"></i></button>
+            <button class="btn btn-icon" aria-label="Move later" onClick="{{ mods.inventory.down }}"><i class="ph-duotone ph-arrow-down"></i></button>
+            <button class="btn btn-icon" aria-label="Hide" onClick="{{ mods.inventory.hide }}"><i class="ph-duotone ph-eye-slash"></i></button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-for list="{{ turnRows }}" as="r" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;align-items:baseline;gap:8px;font-size:14px;">
+            <span>{{ r.label }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ r.sub }}</span>
+            <span style="margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums;color:{{ r.ink }};">{{ r.valueText }}</span>
+          </div>
+          <div style="position:relative;height:8px;background:var(--color-neutral-200);border-radius:var(--radius-sm);">
+            <div style="height:100%;width:{{ r.pct }}%;background:{{ r.bar }};border-radius:var(--radius-sm);"></div>
+            <div style="position:absolute;top:-4px;bottom:-4px;left:{{ turnTarget }}%;border-left:1.5px solid var(--color-text);"></div>
+          </div>
+        </div>
+      </sc-for>
+      <span style="font-size:12px;color:var(--color-neutral-700);">Annualised COGS ÷ average inventory value. Rule marks the 5.0× target.</span>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ mods.fulfillment.show }}" hint-placeholder-val="{{ true }}">
+    <div style="order:{{ mods.fulfillment.order }};display:flex;flex-direction:column;gap:14px;outline:{{ mods.fulfillment.outline }};outline-offset:12px;border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Supply chain</div>
+          <h3 style="margin:0;font-size:21px;">Fulfillment time by warehouse</h3>
+        </div>
+        <sc-if value="{{ customize }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:2px;">
+            <button class="btn btn-icon" aria-label="Move earlier" onClick="{{ mods.fulfillment.up }}"><i class="ph-duotone ph-arrow-up"></i></button>
+            <button class="btn btn-icon" aria-label="Move later" onClick="{{ mods.fulfillment.down }}"><i class="ph-duotone ph-arrow-down"></i></button>
+            <button class="btn btn-icon" aria-label="Hide" onClick="{{ mods.fulfillment.hide }}"><i class="ph-duotone ph-eye-slash"></i></button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-for list="{{ fulfillRows }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;align-items:baseline;gap:8px;font-size:14px;">
+            <span>{{ r.label }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ r.sub }}</span>
+            <span style="margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums;color:{{ r.ink }};">{{ r.valueText }}</span>
+          </div>
+          <div style="position:relative;height:8px;background:var(--color-neutral-200);border-radius:var(--radius-sm);">
+            <div style="height:100%;width:{{ r.pct }}%;background:{{ r.bar }};border-radius:var(--radius-sm);"></div>
+            <div style="position:absolute;top:-4px;bottom:-4px;left:{{ slaTarget }}%;border-left:1.5px solid var(--color-text);"></div>
+          </div>
+        </div>
+      </sc-for>
+      <span style="font-size:12px;color:var(--color-neutral-700);">Order placed → carrier scan, in days. Rule marks the 2.0-day SLA.</span>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ mods.cart.show }}" hint-placeholder-val="{{ true }}">
+    <div style="order:{{ mods.cart.order }};display:flex;flex-direction:column;gap:14px;outline:{{ mods.cart.outline }};outline-offset:12px;border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Checkout</div>
+          <h3 style="margin:0;font-size:21px;">Where carts are abandoned</h3>
+        </div>
+        <sc-if value="{{ customize }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:2px;">
+            <button class="btn btn-icon" aria-label="Move earlier" onClick="{{ mods.cart.up }}"><i class="ph-duotone ph-arrow-up"></i></button>
+            <button class="btn btn-icon" aria-label="Move later" onClick="{{ mods.cart.down }}"><i class="ph-duotone ph-arrow-down"></i></button>
+            <button class="btn btn-icon" aria-label="Hide" onClick="{{ mods.cart.hide }}"><i class="ph-duotone ph-eye-slash"></i></button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-for list="{{ funnel }}" as="f" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;">
+          <span style="font-size:14px;">{{ f.label }}</span>
+          <span style="font-size:14px;font-variant-numeric:tabular-nums;">{{ f.count }}</span>
+          <span style="grid-column:1 / -1;height:14px;background:var(--color-neutral-100);border-radius:var(--radius-sm);"><span style="display:block;height:100%;width:{{ f.pct }}%;background:{{ f.bar }};border-radius:var(--radius-sm);"></span></span>
+          <sc-if value="{{ f.hasDrop }}" hint-placeholder-val="{{ false }}"><span style="grid-column:1 / -1;font-size:12px;color:{{ f.dropInk }};">{{ f.drop }}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ mods.activity.show }}" hint-placeholder-val="{{ true }}">
+    <div style="order:{{ mods.activity.order }};display:flex;flex-direction:column;gap:14px;outline:{{ mods.activity.outline }};outline-offset:12px;border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Team activity</div>
+          <h3 style="margin:0;font-size:21px;">Who's acting on what</h3>
+        </div>
+        <sc-if value="{{ customize }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:2px;">
+            <button class="btn btn-icon" aria-label="Move earlier" onClick="{{ mods.activity.up }}"><i class="ph-duotone ph-arrow-up"></i></button>
+            <button class="btn btn-icon" aria-label="Move later" onClick="{{ mods.activity.down }}"><i class="ph-duotone ph-arrow-down"></i></button>
+            <button class="btn btn-icon" aria-label="Hide" onClick="{{ mods.activity.hide }}"><i class="ph-duotone ph-eye-slash"></i></button>
+          </div>
+        </sc-if>
+      </div>
+      <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;align-items:start;">
+          <span style="width:32px;height:32px;border-radius:50%;background:{{ a.bg }};color:{{ a.ink }};display:grid;place-items:center;font-size:12px;font-weight:600;">{{ a.initials }}</span>
+          <span style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-size:14px;line-height:1.4;"><strong style="font-weight:600;">{{ a.who }}</strong> {{ a.what }}</span>
+            <span style="font-size:12px;color:var(--color-neutral-700);">{{ a.when }}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+    </sc-if>
+  </div>
+  <sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:13px;color:var(--color-neutral-700);">
+      Hidden from this view:
+      <sc-for list="{{ hiddenMods }}" as="h" hint-placeholder-count="1">
+        <button class="btn btn-ghost" onClick="{{ h.restore }}" style="font-size:13px;"><i class="ph-duotone ph-plus"></i>{{ h.label }}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px;">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 24px;">
+    <div style="flex:1 1 280px;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);margin-bottom:4px;">Detailed data</div>
+      <h2 style="margin:0;font-size:28px;">SKU inventory exceptions</h2>
+    </div>
+    <div class="seg" role="radiogroup" aria-label="Status">
+      <sc-for list="{{ statusOpts }}" as="s" hint-placeholder-count="4">
+        <label class="seg-opt"><input type="radio" name="status" checked="{{ s.checked }}" onChange="{{ s.pick }}">{{ s.label }}<span style="font-size:11px;">{{ s.count }}</span></label>
+      </sc-for>
+    </div>
+    <label style="position:relative;display:flex;align-items:center;">
+      <i class="ph-duotone ph-magnifying-glass" style="position:absolute;left:10px;font-size:16px;color:var(--color-neutral-700);"></i>
+      <input class="input" value="{{ q }}" onChange="{{ onSearch }}" placeholder="Filter by SKU or product" style="width:230px;padding-left:32px;">
+    </label>
+  </div>
+  <span style="font-size:13px;color:var(--color-neutral-700);">{{ tableMeta }}</span>
+
+  <sc-if value="{{ tableEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:48px 0;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+      <i class="ph-duotone ph-package" style="font-size:36px;color:var(--color-neutral-500);"></i>
+      <span style="font-family:var(--font-heading);font-weight:600;font-size:22px;">{{ emptyTitle }}</span>
+      <span style="font-size:14px;color:var(--color-neutral-800);max-width:460px;">{{ emptyBody }}</span>
+      <button class="btn btn-secondary" onClick="{{ clearAll }}" style="margin-top:6px;">Clear search and filters</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showTable }}" hint-placeholder-val="{{ true }}">
+    <div style="overflow-x:auto;">
+      <table class="table" style="min-width:880px;">
+        <thead>
+          <tr>
+            <sc-for list="{{ cols }}" as="c" hint-placeholder-count="8">
+              <th style="text-align:{{ c.align }};white-space:nowrap;" aria-sort="{{ c.aria }}">
+                <button onClick="{{ c.sort }}" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:{{ c.ink }};" style-hover="color:var(--color-accent-700)">{{ c.label }}<i class="ph-duotone {{ c.icon }}"></i></button>
+              </th>
+            </sc-for>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+            <tr>
+              <td><div style="display:flex;flex-direction:column;"><span style="font-weight:600;">{{ r.name }}</span><span style="font-size:12px;color:var(--color-neutral-700);font-variant-numeric:tabular-nums;">{{ r.sku }}</span></div></td>
+              <td>{{ r.cat }}</td>
+              <td>{{ r.wh }}</td>
+              <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ r.onHandText }}</td>
+              <td style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.coverInk }};font-weight:600;">{{ r.coverText }}</td>
+              <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ r.turnText }}</td>
+              <td style="font-size:13px;color:var(--color-neutral-800);">{{ r.inbound }}</td>
+              <td><span class="tag {{ r.tagClass }}">{{ r.statusLabel }}</span></td>
+              <td style="text-align:right;">
+                <sc-if value="{{ r.hasAction }}" hint-placeholder-val="{{ false }}"><button class="btn btn-ghost" onClick="{{ r.act }}" style="font-size:13px;white-space:nowrap;">{{ r.action }}</button></sc-if>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showList }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-700);padding-bottom:8px;">
+        Sort by
+        <select class="input" value="{{ sortKey }}" onChange="{{ onSortSelect }}" style="width:auto;min-height:30px;padding:3px 8px;font-size:13px;background:transparent;">
+          <sc-for list="{{ cols }}" as="c" hint-placeholder-count="8"><option value="{{ c.k }}">{{ c.label }}</option></sc-for>
+        </select>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+        <div style="border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);">
+          <button onClick="{{ r.toggle }}" aria-expanded="{{ r.open }}" style="all:unset;cursor:pointer;width:100%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:14px 0;">
+            <span style="display:flex;flex-direction:column;min-width:0;"><span style="font-weight:600;font-size:15px;">{{ r.name }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ r.sku }} · {{ r.wh }}</span></span>
+            <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;"><span class="tag {{ r.tagClass }}">{{ r.statusLabel }}</span><span style="font-size:12px;font-weight:600;color:{{ r.coverInk }};">{{ r.coverText }} cover</span></span>
+            <i class="ph-duotone {{ r.caret }}" style="font-size:18px;color:var(--color-accent-700);"></i>
+          </button>
+          <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px;padding:0 0 16px;font-size:14px;">
+              <span style="display:flex;flex-direction:column;"><span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-700);">Category</span>{{ r.cat }}</span>
+              <span style="display:flex;flex-direction:column;"><span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-700);">On hand</span>{{ r.onHandText }} units</span>
+              <span style="display:flex;flex-direction:column;"><span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-700);">Turnover</span>{{ r.turnText }}</span>
+              <span style="display:flex;flex-direction:column;"><span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-700);">Inbound</span>{{ r.inbound }}</span>
+              <sc-if value="{{ r.hasAction }}" hint-placeholder-val="{{ false }}"><button class="btn btn-secondary" onClick="{{ r.act }}" style="grid-column:1 / -1;justify-self:start;min-height:44px;">{{ r.action }}</button></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+</section>
+</main>
+
+<sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeDrawer }}" style="position:fixed;inset:0;background:color-mix(in srgb, var(--color-neutral-900) 35%, transparent);z-index:50;"></div>
+  <aside role="dialog" aria-label="{{ drawer.title }}" style="position:fixed;top:0;right:0;bottom:0;width:min(560px,100vw);background:var(--color-bg);box-shadow:var(--shadow-lg);z-index:51;overflow-y:auto;padding:28px 32px 40px;display:flex;flex-direction:column;gap:26px;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <i class="ph-duotone {{ drawer.icon }}" style="font-size:22px;color:{{ drawer.color }};"></i>
+      <span style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-neutral-700);">{{ drawer.kind }}</span>
+      <button class="btn btn-icon" aria-label="Close" onClick="{{ closeDrawer }}" style="margin-left:auto;font-size:20px;"><i class="ph-duotone ph-x"></i></button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h2 style="margin:0;font-size:30px;text-wrap:pretty;">{{ drawer.title }}</h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="tag" style="background:{{ drawer.badgeBg }};color:{{ drawer.badgeInk }};font-weight:600;font-size:13px;">{{ drawer.delta }}</span>
+        <span style="font-size:13px;color:var(--color-neutral-700);">{{ drawer.confidence }}</span>
+      </div>
+      <p style="margin:0;font-size:16px;line-height:1.55;text-wrap:pretty;">{{ drawer.summary }}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <h4 style="margin:0;font-size:18px;">Why it happened</h4>
+      <sc-for list="{{ drawer.why }}" as="w" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:baseline;gap:10px;"><span style="font-size:15px;font-weight:600;">{{ w.label }}</span><span style="margin-left:auto;font-size:13px;font-variant-numeric:tabular-nums;color:var(--color-neutral-700);">{{ w.pct }}% of change</span></div>
+          <div style="height:6px;background:var(--color-neutral-200);border-radius:var(--radius-sm);"><div style="height:100%;width:{{ w.pct }}%;background:{{ drawer.color }};border-radius:var(--radius-sm);"></div></div>
+          <span style="font-size:14px;line-height:1.45;color:var(--color-neutral-800);">{{ w.detail }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <h4 style="margin:0;font-size:18px;">What to do next</h4>
+      <sc-for list="{{ drawer.actions }}" as="a" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:center;">
+          <span style="font-family:var(--font-heading);font-weight:600;font-size:16px;color:var(--color-accent-700);">{{ a.n }}</span>
+          <span style="font-size:14px;line-height:1.4;">{{ a.label }}</span>
+          <button class="btn btn-secondary" onClick="{{ a.run }}" style="font-size:13px;white-space:nowrap;">{{ a.cta }}</button>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;">
+      <button class="btn btn-primary" onClick="{{ markReviewed }}"><i class="ph-duotone ph-check-circle"></i>{{ drawer.reviewCta }}</button>
+      <button class="btn btn-secondary"><i class="ph-duotone ph-user-plus"></i>Assign to…</button>
+      <button class="btn btn-ghost"><i class="ph-duotone ph-chart-line-up"></i>Open in Analytics</button>
+    </div>
+  </aside>
+</sc-if>
+
+<sc-if value="{{ exportOpen }}" hint-placeholder-val="{{ false }}">
+  <div class="dialog-backdrop" style="z-index:60;" onClick="{{ closeExport }}">
+    <div class="dialog" role="dialog" aria-label="Export and share" onClick="{{ stop }}" style="width:min(520px,100%);background:var(--color-bg);">
+      <div class="dialog-title">Export &amp; share this view</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <sc-for list="{{ exportFmts }}" as="f" hint-placeholder-count="3">
+          <label class="radio" style="align-items:flex-start;">
+            <input type="radio" name="fmt" checked="{{ f.checked }}" onChange="{{ f.pick }}"><span class="dot" style="margin-top:3px;"></span>
+            <span style="display:flex;flex-direction:column;"><span style="font-weight:600;">{{ f.label }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ f.sub }}</span></span>
+          </label>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700);">People with access</span>
+        <sc-for list="{{ team }}" as="t" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;">
+            <span style="width:30px;height:30px;border-radius:50%;background:var(--color-neutral-200);display:grid;place-items:center;font-size:11px;font-weight:600;">{{ t.initials }}</span>
+            <span style="display:flex;flex-direction:column;"><span style="font-size:14px;">{{ t.name }}</span><span style="font-size:12px;color:var(--color-neutral-700);">{{ t.role }}</span></span>
+            <select class="input" style="width:auto;min-height:30px;padding:3px 8px;font-size:13px;background:transparent;"><option>{{ t.access }}</option><option>Can view</option><option>Can edit</option><option>Remove</option></select>
+          </div>
+        </sc-for>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" onClick="{{ closeExport }}">Cancel</button>
+        <button class="btn btn-primary" onClick="{{ doExport }}">{{ exportCta }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:70;background:var(--color-text);color:var(--color-bg);padding:12px 18px;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);font-size:14px;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 40px);">
+    <i class="ph-duotone ph-check-circle" style="font-size:18px;color:var(--color-accent-300);"></i>{{ toast }}
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;viewState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ready&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;ready&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;States&quot;},&quot;defaultRole&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;exec&quot;,&quot;ops&quot;,&quot;growth&quot;],&quot;default&quot;:&quot;exec&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;View&quot;},&quot;showBrief&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;View&quot;}}">
+const RANGES=[{k:'7D',label:'the last 7 days',short:'7 days',n:7,total:196240,unit:'day'},{k:'30D',label:'the last 30 days',short:'30 days',n:30,total:842430,unit:'day'},{k:'QTD',label:'quarter to date',short:'quarter',n:13,total:2314800,unit:'week'},{k:'YTD',label:'year to date',short:'year',n:38,total:7906100,unit:'week'}];
+const CH=[{k:'shopify',label:'Shopify',share:.42,delta:18.3},{k:'amazon',label:'Amazon',share:.28,delta:-4.1},{k:'pos',label:'Retail POS',share:.18,delta:6.0},{k:'wholesale',label:'Wholesale',share:.12,delta:2.2}];
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const ST={ok:{label:'On track',dot:'var(--color-accent)',ring:'var(--color-accent)',ink:'var(--color-accent-700)'},watch:{label:'Watch',dot:'transparent',ring:'var(--color-neutral-700)',ink:'var(--color-neutral-700)'},risk:{label:'At risk',dot:'var(--color-accent-2)',ring:'var(--color-accent-2)',ink:'var(--color-accent-2-700)'}};
+const GOOD={bg:'var(--color-accent-100)',ink:'var(--color-accent-800)'},BAD={bg:'var(--color-accent-2-100)',ink:'var(--color-accent-2-800)'};
+const ROLES=[{k:'exec',label:'Executive',icon:'ph-briefcase'},{k:'ops',label:'Operations',icon:'ph-truck'},{k:'growth',label:'Growth',icon:'ph-megaphone'}];
+const MODS={roas:'Return on ad spend',inventory:'Stock turnover',fulfillment:'Fulfillment time',cart:'Cart abandonment',activity:'Team activity'};
+const DEFAULT_LAYOUT={exec:['roas','inventory','cart','fulfillment','activity'],ops:['fulfillment','inventory','activity','roas','cart'],growth:['roas','cart','activity','inventory','fulfillment']};
+const fmt$=v=>'$'+Math.round(v).toLocaleString('en-US');
+const fmtK=v=>v>=1e6?'$'+(v/1e6).toFixed(2)+'M':v>=1e3?'$'+Math.round(v/1e3)+'K':'$'+Math.round(v);
+const fmtN=v=>Math.round(v).toLocaleString('en-US');
+
+const KPIS={
+exec:[
+{k:'rev',label:'Revenue',value:null,delta:'12.4%',up:true,good:true,st:'ok',target:'Target $800K · 105% attained',formula:'Gross merchandise value across all channels, minus refunds and cancellations. Excludes tax and shipping.',source:'Shopify, Amazon SP-API, Lightspeed POS, NetSuite EDI',spark:[52,55,53,58,60,57,63,66,64,70,72,76]},
+{k:'cust',label:'Customers',value:'24,892',delta:'8.2%',up:true,good:true,st:'ok',target:'Target 24,000 · repeat share 38%',formula:'Unique buyers with at least one completed order in the period, de-duplicated by email and loyalty ID.',source:'Shopify + POS loyalty, identity-resolved nightly',spark:[40,42,41,44,45,47,46,49,50,52,54,55]},
+{k:'conv',label:'Conversion',value:'8.42%',delta:'1.8 pts',up:true,good:true,st:'ok',target:'Benchmark 6.9% (apparel DTC median)',formula:'Orders ÷ sessions with product intent (product view or search). Bot traffic excluded.',source:'Shopify analytics, GA4',spark:[30,31,33,32,34,35,34,37,38,37,39,41]},
+{k:'churn',label:'Churn',value:'2.1%',delta:'0.6 pts',up:false,good:true,st:'watch',target:'Target 1.8% · still above goal',formula:'Share of customers active in the prior 90 days who made no purchase in the last 90 days.',source:'Customer ledger, rolling 90-day window',spark:[60,58,59,56,55,54,55,52,51,50,49,48]}],
+ops:[
+{k:'turn',label:'Stock turnover',value:'5.8×',delta:'0.4×',up:true,good:true,st:'ok',target:'Target 5.0× · annualised',formula:'Annualised cost of goods sold ÷ average inventory value at cost over the period.',source:'NetSuite inventory ledger',spark:[40,41,43,42,44,46,45,47,48,49,51,52]},
+{k:'ful',label:'Avg. fulfillment',value:'2.3 days',delta:'0.5 days',up:true,good:false,st:'risk',target:'SLA 2.0 days · breached 9 of 30 days',formula:'Median time from order placed to first carrier scan, weighted by order volume across warehouses.',source:'ShipBob WMS + carrier scan events',spark:[30,31,30,32,33,35,38,42,44,41,43,46]},
+{k:'oos',label:'Stockout-risk SKUs',value:'37',delta:'12 SKUs',up:true,good:false,st:'risk',target:'Tolerance 20 · 11 are top sellers',formula:'SKUs whose days of cover (on hand ÷ 14-day avg. daily sales) is under their supplier lead time.',source:'Demand forecast v3, supplier lead times',spark:[18,19,20,20,22,24,25,27,30,32,35,37]},
+{k:'ots',label:'On-time ship',value:'91.2%',delta:'3.1 pts',up:false,good:false,st:'watch',target:'Target 95% · Reno DC dragging',formula:'Orders shipped by the promised ship-by date ÷ all orders shipped.',source:'ShipBob WMS',spark:[60,61,60,59,60,58,55,52,50,52,51,49]}],
+growth:[
+{k:'roas',label:'Blended ROAS',value:'3.9×',delta:'0.3×',up:true,good:true,st:'ok',target:'Target 3.0× · break-even 2.5×',formula:'Attributed revenue ÷ ad spend across all paid platforms. 7-day click, 1-day view attribution.',source:'Google Ads, Meta, TikTok, Amazon Ads, Pinterest',spark:[40,42,41,43,45,44,46,48,47,49,50,52]},
+{k:'cart',label:'Cart abandonment',value:'68.4%',delta:'2.1 pts',up:true,good:false,st:'risk',target:'Benchmark 70.2% · rising since Sep 10',formula:'1 − (completed checkouts ÷ sessions with an add-to-cart).',source:'Shopify checkout events',spark:[40,40,41,40,41,42,44,46,47,47,48,49]},
+{k:'conv',label:'Conversion',value:'8.42%',delta:'1.8 pts',up:true,good:true,st:'ok',target:'Benchmark 6.9% (apparel DTC median)',formula:'Orders ÷ sessions with product intent (product view or search). Bot traffic excluded.',source:'Shopify analytics, GA4',spark:[30,31,33,32,34,35,34,37,38,37,39,41]},
+{k:'cac',label:'Acquisition cost',value:'$41.20',delta:'9.0%',up:true,good:false,st:'watch',target:'Ceiling $45 · LTV:CAC 3.4',formula:'Total paid media + affiliate spend ÷ new customers acquired in the period.',source:'Ad platforms + Shopify first-order flag',spark:[40,41,40,42,43,44,46,47,48,50,51,53]}]};
+
+const INS={
+'shopify-growth':{icon:'ph-trend-up',tone:'good',kind:'Growth driver',title:'Shopify drove 61% of revenue growth',delta:'+18.3%',short:'The fall collection launch and a higher repeat-order value carried the direct channel.',summary:'Shopify revenue rose 18.3% against the previous period, contributing $56K of the $93K total increase. The lift started with the fall collection drop on Sep 8 and held after launch week, which suggests demand rather than a one-off spike.',confidence:'Detected automatically · 94% confidence · 14,210 orders',why:[{label:'Fall collection launch',pct:48,detail:'312 new SKUs; outerwear sold through 41% in two weeks.'},{label:'Higher repeat-order value',pct:34,detail:'Returning-customer AOV rose from $94 to $108 after the bundle offer.'},{label:'Email & SMS flows',pct:18,detail:'Browse-abandon flow revenue up 27%; now 22% of Shopify revenue.'}],actions:[{label:'Reorder the top 12 outerwear SKUs before cover drops below 21 days',cta:'Draft POs'},{label:'Extend the bundle offer to Amazon listings',cta:'Create task'},{label:'Share this driver with the merchandising team',cta:'Share'}]},
+'retention':{icon:'ph-trend-up',tone:'good',kind:'Customer health',title:'Customer retention improved 6.2%',delta:'+6.2%',short:'Loyalty members are coming back sooner. The median gap between orders fell from 41 to 34 days.',summary:'90-day retention reached 44.8%, up from 42.2%. Most of the gain comes from loyalty members in their second and third order, the cohort the September points-multiplier campaign targeted.',confidence:'Cohort analysis · 91% confidence · 24,892 customers',why:[{label:'Points-multiplier campaign',pct:55,detail:'2× points on second orders; 3,140 redemptions.'},{label:'Faster delivery in the East',pct:30,detail:'Columbus and Atlanta customers got orders in 2.1 days vs 3.0.'},{label:'Fewer returns in footwear',pct:15,detail:'New size guide cut size-related returns by 19%.'}],actions:[{label:'Make the second-order multiplier permanent for loyalty tier 1',cta:'Propose'},{label:'Roll the size guide out to apparel',cta:'Create task'}]},
+'cac':{icon:'ph-trend-down',tone:'bad',kind:'Cost pressure',title:'Acquisition costs rose 9%',delta:'+9.0%',short:'TikTok CPMs are up 31% and its ROAS has dropped below break-even.',summary:'Blended CAC rose to $41.20. TikTok accounts for most of the rise: CPMs climbed 31% as fall retail demand competed for the same audiences, while conversion from TikTok traffic stayed flat.',confidence:'Detected automatically · 88% confidence · $176K spend analysed',why:[{label:'TikTok CPM inflation',pct:62,detail:'$9.40 → $12.30 CPM; ROAS fell to 1.9×.'},{label:'Meta prospecting fatigue',pct:28,detail:'Creative frequency hit 4.8; CTR down 0.4 pts.'},{label:'Lower affiliate mix',pct:10,detail:'Two affiliate partners paused September placements.'}],actions:[{label:'Shift 30% of TikTok budget to Google Shopping (4.8× ROAS)',cta:'Rebalance'},{label:'Refresh Meta prospecting creative',cta:'Create task'}]},
+'amz-anomaly':{icon:'ph-warning-diamond',tone:'alert',kind:'Anomaly',title:'Amazon revenue fell 23% on Sep 14–17',delta:'−23% for 4 days',short:'Six top SKUs stocked out at the Reno DC and their listings went inactive.',summary:'Amazon revenue dropped well outside its expected range for four days. The drop matches the stockout window of six Reno-fulfilled SKUs, whose buy-box eligibility lapsed. Revenue recovered when a transfer from Columbus landed on Sep 18.',confidence:'Anomaly model · 97% confidence · 3.4σ below forecast',why:[{label:'Reno DC stockouts',pct:71,detail:'6 SKUs including Trail runner (sizes 9–10) out for 3–4 days.'},{label:'Lost buy box',pct:21,detail:'Listings fell back to a 3P seller at a higher price.'},{label:'Delayed inbound PO',pct:8,detail:'PO #4471 arrived 5 days late from the supplier.'}],actions:[{label:'Raise the safety stock for Reno-fulfilled Amazon SKUs',cta:'Adjust'},{label:'Add a stockout alert for buy-box SKUs',cta:'Create alert'},{label:'Flag supplier for PO #4471 lateness',cta:'Flag'}]},
+'reno':{icon:'ph-warning-diamond',tone:'alert',kind:'Supply chain',title:'Reno DC fulfillment slipped to 3.4 days',delta:'+1.4 days vs SLA',short:'Staffing is 18% below plan and the carrier missed three pickups this week.',summary:'Reno now takes 3.4 days on average, against a 2.0-day SLA. It handles 31% of West Coast volume, so the delay pulls network on-time shipping down to 91.2%.',confidence:'Detected automatically · 95% confidence · 6,880 orders',why:[{label:'Pick & pack staffing gap',pct:52,detail:'Two shifts running at 82% of planned headcount.'},{label:'Missed carrier pickups',pct:33,detail:'UPS missed 3 scheduled pickups; 1,120 orders held overnight.'},{label:'Stock transfers in flight',pct:15,detail:'Replenishment receiving is taking dock time from outbound.'}],actions:[{label:'Route West Coast overflow to Columbus for 7 days',cta:'Reroute'},{label:'Escalate missed pickups with the UPS account rep',cta:'Escalate'},{label:'Approve temp labour for the weekend shifts',cta:'Approve'}]},
+'oos':{icon:'ph-trend-down',tone:'bad',kind:'Inventory',title:'37 SKUs will stock out within 14 days',delta:'+12 SKUs',short:'11 of them are top-50 sellers, together worth an estimated $64K in weekly revenue.',summary:'Demand for footwear and outerwear is running 22% above forecast, so days of cover is shrinking faster than supplier lead times allow. Most at-risk SKUs sit in Reno.',confidence:'Demand forecast v3 · 90% confidence',why:[{label:'Demand above forecast',pct:58,detail:'Fall collection sell-through 22% ahead of plan.'},{label:'Long supplier lead times',pct:29,detail:'Footwear lead time is 38 days vs 21 for apparel.'},{label:'Stock imbalance between DCs',pct:13,detail:'Columbus holds 3× the cover of Reno on the same SKUs.'}],actions:[{label:'Transfer surplus from Columbus to Reno (9 SKUs)',cta:'Create transfer'},{label:'Expedite PO #4502 by air',cta:'Expedite'}]},
+'electronics':{icon:'ph-trend-down',tone:'bad',kind:'Inventory',title:'Electronics turnover fell to 2.4×',delta:'−0.9×',short:'$212K of stock is tied up in two chargers and speakers with 110+ days of cover.',summary:'Electronics is well below the 5.0× turnover target. Two SKUs account for most of the excess, both over-bought ahead of a promo that underperformed.',confidence:'Inventory ledger · 93% confidence',why:[{label:'Over-buy for August promo',pct:64,detail:'Promo sold 38% of planned units.'},{label:'Slower Amazon velocity',pct:36,detail:'Competing listing undercut price by 12%.'}],actions:[{label:'Mark down USB-C charger 20% on Amazon',cta:'Mark down'},{label:'Offer bulk lot to wholesale partners',cta:'Create offer'}]},
+'columbus':{icon:'ph-trend-up',tone:'good',kind:'Supply chain',title:'Columbus on-time ship rate hit 98.1%',delta:'+2.4 pts',short:'A new wave-picking schedule is cutting time on the floor. It could work at Reno too.',summary:'Columbus shipped 98.1% of orders on time after moving to wave picking on Sep 2. Median pick time fell 26%.',confidence:'WMS events · 96% confidence',why:[{label:'Wave-picking schedule',pct:70,detail:'Pick time down from 4.2 to 3.1 min per order.'},{label:'Second carrier pickup',pct:30,detail:'Added an afternoon FedEx pickup.'}],actions:[{label:'Pilot wave picking at Reno',cta:'Create task'}]},
+'tiktok':{icon:'ph-trend-down',tone:'bad',kind:'Ad performance',title:'TikTok ROAS below break-even at 1.9×',delta:'−1.1×',short:'CPMs are up 31% and conversion hasn\u2019t moved. Every $1 spent there returns $1.90.',summary:'TikTok returned 1.9× on $24.6K spend. Break-even after COGS and fulfillment is 2.5×, so the channel lost roughly $4.2K in contribution margin this period.',confidence:'Platform + Shopify attribution · 89% confidence',why:[{label:'CPM inflation',pct:66,detail:'$9.40 → $12.30 as Q4 retail demand ramps.'},{label:'Creative fatigue',pct:34,detail:'Top ad frequency 5.2; hook rate down 18%.'}],actions:[{label:'Cap TikTok daily budget at $400',cta:'Apply cap'},{label:'Move $6K to Google Shopping',cta:'Rebalance'}]},
+'checkout':{icon:'ph-warning-diamond',tone:'alert',kind:'Checkout',title:'Cart abandonment up 2.1 pts at the shipping step',delta:'+2.1 pts',short:'Drop-off jumped on Sep 10, the day the new shipping rates went live.',summary:'Abandonment at the shipping step went from 34% to 41% overnight on Sep 10, when the free-shipping threshold moved from $75 to $99. Shoppers who dropped had a median cart of $82.',confidence:'Anomaly model · 96% confidence · 61,840 carts',why:[{label:'Free-shipping threshold raised',pct:74,detail:'Carts between $75–$99 now pay $7.95.'},{label:'Shipping cost shown late',pct:26,detail:'Cost only appears after address entry.'}],actions:[{label:'A/B test an $85 threshold',cta:'Set up test'},{label:'Show shipping estimate on the cart page',cta:'Create ticket'}]},
+'google':{icon:'ph-trend-up',tone:'good',kind:'Ad performance',title:'Google Shopping ROAS rose to 4.8×',delta:'+0.7×',short:'The new product feed with fall imagery is lifting click-through.',summary:'Google Shopping is the most efficient paid channel with room to scale: impression share is only 54%.',confidence:'Platform attribution · 90% confidence',why:[{label:'Feed refresh',pct:60,detail:'CTR up from 1.1% to 1.6%.'},{label:'Smart bidding on margin',pct:40,detail:'Bids now weighted to high-margin SKUs.'}],actions:[{label:'Raise daily budget 25%',cta:'Increase'}]}};
+const ROLE_INS={exec:['shopify-growth','retention','cac','amz-anomaly'],ops:['reno','oos','electronics','columbus'],growth:['tiktok','checkout','google','cac']};
+const BRIEF={
+exec:{lead:'Revenue is up 12.4%, carried by Shopify and a stronger repeat customer.',turn:'The risk is supply, not demand: Reno is slipping and cost per customer is climbing.'},
+ops:{lead:'Turnover is healthy at 5.8×, but the network is shipping late.',turn:'Reno DC is 1.4 days over SLA, and 37 SKUs will stock out before their POs land.'},
+growth:{lead:'Paid media is returning 3.9× overall, led by Google Shopping.',turn:'TikTok is losing money, and a shipping-rate change is costing carts at checkout.'}};
+
+const SKUS=[
+{sku:'NW-AP-1042',name:'Merino crew sweater, Oat',cat:'Apparel',wh:'Columbus',onHand:1840,cover:38,turn:6.8,inbound:'—',status:'healthy'},
+{sku:'NW-FW-2210',name:'Trail runner, Slate 10',cat:'Footwear',wh:'Reno',onHand:96,cover:4,turn:7.9,inbound:'Oct 9 · 600',status:'risk'},
+{sku:'NW-FW-2214',name:'Trail runner, Slate 9',cat:'Footwear',wh:'Reno',onHand:142,cover:6,turn:7.4,inbound:'Oct 9 · 480',status:'risk'},
+{sku:'NW-EL-5031',name:'Wireless speaker Mini',cat:'Electronics',wh:'Newark',onHand:4210,cover:142,turn:1.9,inbound:'—',status:'over'},
+{sku:'NW-HM-3307',name:'Linen duvet cover, Queen',cat:'Home',wh:'Atlanta',onHand:612,cover:21,turn:4.6,inbound:'Oct 3 · 300',status:'low'},
+{sku:'NW-BT-4120',name:'Daily SPF 40 moisturizer',cat:'Beauty',wh:'Columbus',onHand:3905,cover:29,turn:9.4,inbound:'Oct 1 · 2,000',status:'healthy'},
+{sku:'NW-AP-1188',name:'Waxed field jacket, Olive M',cat:'Apparel',wh:'Reno',onHand:58,cover:3,turn:5.2,inbound:'Oct 14 · 250',status:'risk'},
+{sku:'NW-EL-5077',name:'USB-C travel charger',cat:'Electronics',wh:'Newark',onHand:6480,cover:118,turn:2.3,inbound:'—',status:'over'},
+{sku:'NW-HM-3350',name:'Stoneware mug set of 4',cat:'Home',wh:'Atlanta',onHand:1120,cover:44,turn:3.8,inbound:'—',status:'healthy'},
+{sku:'NW-BT-4188',name:'Overnight repair serum',cat:'Beauty',wh:'Reno',onHand:210,cover:9,turn:10.2,inbound:'Oct 6 · 900',status:'low'},
+{sku:'NW-AP-1203',name:'Organic tee, Black L',cat:'Apparel',wh:'Columbus',onHand:2760,cover:33,turn:7.1,inbound:'—',status:'healthy'},
+{sku:'NW-FW-2290',name:'Leather chelsea boot, Tan 8',cat:'Footwear',wh:'Atlanta',onHand:1480,cover:96,turn:2.1,inbound:'—',status:'over'},
+{sku:'NW-HM-3391',name:'Wool throw blanket',cat:'Home',wh:'Newark',onHand:330,cover:11,turn:5.0,inbound:'Oct 2 · 400',status:'low'},
+{sku:'NW-EL-5102',name:'Smart plug 2-pack',cat:'Electronics',wh:'Columbus',onHand:890,cover:27,turn:4.4,inbound:'—',status:'healthy'}];
+const SKU_ST={risk:{label:'Stockout risk',tag:'tag-accent-2',action:'Reorder'},low:{label:'Low stock',tag:'tag-neutral',action:'Transfer stock'},over:{label:'Overstock',tag:'tag-neutral',action:'Plan markdown'},healthy:{label:'Healthy',tag:'tag-accent',action:null}};
+
+function rng(seed){let s=seed;return()=>{s=(s*9301+49297)%233280;return s/233280;};}
+function buildSeries(range){
+  const r=rng(range.n*7+3),n=range.n,per=range.total/n,an=Math.round(n*0.62),pts=[];
+  for(let i=0;i<n;i++){
+    const trend=0.9+0.2*(i/Math.max(1,n-1)),wk=range.unit==='day'?1+0.07*Math.sin(i*0.9):1,ch={};let tot=0;
+    CH.forEach(c=>{let v=per*c.share*trend*wk*(0.93+r()*0.14);if(c.k==='amazon'&&Math.abs(i-an)<=(range.unit==='day'&&n>7?1:0))v*=0.6;ch[c.k]=v;tot+=v;});
+    pts.push({ch,tot,prevRatio:0.86+r()*0.06,aov:98+r()*10});
+  }
+  const sum=pts.reduce((a,p)=>a+p.tot,0),f=range.total/sum;
+  pts.forEach(p=>{p.tot*=f;CH.forEach(c=>p.ch[c.k]*=f);});
+  const end=new Date(2026,8,26);
+  pts.forEach((p,i)=>{const d=new Date(end);d.setDate(d.getDate()-(n-1-i)*(range.unit==='day'?1:7));p.date=(range.unit==='week'?'Wk of ':'')+MON[d.getMonth()]+' '+d.getDate();p.short=MON[d.getMonth()]+' '+d.getDate();});
+  return {pts,an};
+}
+function spark(arr){const mn=Math.min(...arr),mx=Math.max(...arr),n=arr.length;return arr.map((v,i)=>(i?'L':'M')+(i/(n-1)*200).toFixed(1)+','+(32-(v-mn)/(mx-mn||1)*28).toFixed(1)).join(' ');}
+function niceMax(v){const p=Math.pow(10,Math.floor(Math.log10(v))),m=v/p;return (m<=1.5?1.5:m<=2?2:m<=2.5?2.5:m<=3?3:m<=4?4:m<=5?5:m<=6?6:m<=8?8:10)*p;}
+
+class Component extends DCLogic {
+  constructor(p){super(p);
+    this.rootRef=React.createRef();
+    this.state={role:p.defaultRole||'exec',range:'30D',compare:true,channel:'all',metric:'revenue',hover:null,filtersOpen:false,fWh:[],fCat:[],status:'all',q:'',sortKey:'cover',sortDir:1,drawer:null,info:null,notifOpen:false,exportOpen:false,exportFmt:'csv',customize:false,layouts:JSON.parse(JSON.stringify(DEFAULT_LAYOUT)),hidden:{exec:{},ops:{},growth:{}},narrow:false,busy:false,toast:null,expanded:null,retried:false,reviewed:{}};
+  }
+  componentDidMount(){
+    const el=this.rootRef.current;
+    if(el&&window.ResizeObserver){this.ro=new ResizeObserver(e=>{const w=e[0].contentRect.width;const narrow=w<860;if(narrow!==this.state.narrow)this.setState({narrow});});this.ro.observe(el);}
+    this.onKey=e=>{if(e.key==='Escape')this.setState({drawer:null,exportOpen:false,notifOpen:false,info:null});};
+    window.addEventListener('keydown',this.onKey);
+  }
+  componentWillUnmount(){this.ro&&this.ro.disconnect();window.removeEventListener('keydown',this.onKey);clearTimeout(this.tt);clearTimeout(this.bt);}
+  componentDidUpdate(pp){if(pp.defaultRole!==this.props.defaultRole&&this.props.defaultRole)this.setState({role:this.props.defaultRole});if(pp.viewState!==this.props.viewState)this.setState({retried:false});}
+  flash(msg){clearTimeout(this.tt);this.setState({toast:msg});this.tt=setTimeout(()=>this.setState({toast:null}),2800);}
+  busy(ms){clearTimeout(this.bt);this.setState({busy:true});this.bt=setTimeout(()=>this.setState({busy:false}),ms);}
+
+  renderVals(){
+    const s=this.state,vs=this.props.viewState??'ready',showBrief=this.props.showBrief??true;
+    const loading=vs==='loading'||s.busy,empty=vs==='empty',error=vs==='error'&&!s.retried;
+    const range=RANGES.find(r=>r.k===s.range),role=s.role;
+    const {pts,an}=buildSeries(range),n=pts.length;
+    const isRev=s.metric==='revenue';
+    const valOf=p=>{const v=s.channel==='all'?p.tot:p.ch[s.channel];return isRev?v:v/p.aov;};
+    const cur=pts.map(valOf),prev=pts.map((p,i)=>cur[i]*p.prevRatio);
+    const mx=niceMax(Math.max(...cur,...(s.compare?prev:[0]))*1.05);
+    const X=i=>(i/(n-1)*1000),Y=v=>300-v/mx*300;
+    const line=cur.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+    const prevLine=prev.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+    const area=line+' L1000,300 L0,300 Z';
+    const fv=v=>isRev?fmt$(v):fmtN(v)+' orders';
+    const sumC=cur.reduce((a,b)=>a+b,0),sumP=prev.reduce((a,b)=>a+b,0),dPct=(sumC/sumP-1)*100;
+    const tickCount=Math.min(n,6),xTicks=[];
+    for(let t=0;t<tickCount;t++){const i=Math.round(t*(n-1)/(tickCount-1));xTicks.push({left:i/(n-1)*100,label:pts[i].short,shift:t===0?'0':t===tickCount-1?'-100%':'-50%'});}
+    const yTicks=[1,.75,.5,.25,0].map(f=>({top:(1-f)*100,label:isRev?fmtK(mx*f):fmtN(mx*f)}));
+    let hover={show:false};
+    if(s.hover!=null&&s.hover<n){const i=s.hover,d=(cur[i]/prev[i]-1)*100,left=i/(n-1)*100;hover={show:true,left,top:Y(cur[i])/3,date:pts[i].date,cur:fv(cur[i]),prev:fv(prev[i]),delta:(d>=0?'↑ ':'↓ ')+Math.abs(d).toFixed(1)+'% vs prev.',deltaInk:d>=0?'var(--color-accent-700)':'var(--color-accent-2-700)',shift:left>60?'calc(-100% - 24px)':'0'};}
+    const chName=s.channel==='all'?'All channels':CH.find(c=>c.k===s.channel).label;
+    const chart={line,prevLine,area,yTicks,xTicks,hover,lineInk:s.channel==='all'?'var(--color-text)':'var(--color-accent)',totalText:isRev?fmt$(sumC):fmtN(sumC)+' orders',deltaText:(dPct>=0?'↑ ':'↓ ')+Math.abs(dPct).toFixed(1)+'% vs prev. '+range.short,badgeBg:dPct>=0?GOOD.bg:BAD.bg,badgeInk:dPct>=0?GOOD.ink:BAD.ink,channelLabel:chName,anomaly:{show:(s.channel==='all'||s.channel==='amazon')&&n>7,left:an/(n-1)*100}};
+
+    const ST_ROLE=KPIS[role].map(k=>{
+      const good=k.good,val=k.k==='rev'?fmt$(range.total):k.value;
+      return {label:k.label,value:empty&&k.k==='rev'?'$0':val,delta:k.delta,arrow:k.up?'↑':'↓',badgeBg:good?GOOD.bg:BAD.bg,badgeInk:good?GOOD.ink:BAD.ink,st:ST[k.st],target:k.target,formula:k.formula,source:'Source: '+k.source,spark:spark(k.spark),sparkInk:good?'var(--color-accent)':'var(--color-accent-2)',infoOpen:s.info===k.k,toggleInfo:()=>this.setState(x=>({info:x.info===k.k?null:k.k}))};
+    });
+
+    const toneMeta=t=>t==='good'?{color:'var(--color-accent)',...GOOD}:{color:'var(--color-accent-2)',...BAD};
+    const insights=ROLE_INS[role].map(id=>{const it=INS[id],m=toneMeta(it.tone);return {icon:it.icon,color:m.color,title:it.title,short:it.short,delta:it.delta,badgeBg:m.bg,badgeInk:m.ink,reviewedLabel:s.reviewed[id]?'Reviewed by you':'',open:()=>this.setState({drawer:id,notifOpen:false})};});
+    let drawer={};
+    if(s.drawer){const it=INS[s.drawer],m=toneMeta(it.tone);drawer={...it,color:m.color,badgeBg:m.bg,badgeInk:m.ink,reviewCta:s.reviewed[s.drawer]?'Reviewed':'Mark as reviewed',actions:it.actions.map((a,i)=>({...a,n:i+1,run:()=>this.flash(a.cta+' — queued for '+it.kind.toLowerCase()+' owner')}))};}
+
+    const chTotals=CH.map(c=>({c,v:pts.reduce((a,p)=>a+p.ch[c.k],0)}));
+    const maxCh=Math.max(...chTotals.map(x=>x.v));
+    const channelMix=chTotals.map(({c,v})=>{const on=s.channel===c.k;return {label:c.label,share:Math.round(v/range.total*100)+'%',value:fmtK(v),delta:(c.delta>=0?'↑':'↓')+Math.abs(c.delta).toFixed(1)+'%',deltaInk:c.delta>=0?'var(--color-accent-700)':'var(--color-accent-2-700)',pct:v/maxCh*100,barInk:on?'var(--color-accent)':'var(--color-neutral-600)',bg:on?'var(--color-accent-100)':'transparent',on,pick:()=>this.setState(x=>({channel:x.channel===c.k?'all':c.k,hover:null}))};});
+
+    const bar=(label,sub,value,valueText,scale,st)=>({label,sub,valueText,pct:Math.min(100,value/scale*100),bar:st==='risk'?'var(--color-accent-2)':st==='watch'?'var(--color-neutral-500)':'var(--color-accent)',ink:st==='risk'?'var(--color-accent-2-700)':'var(--color-text)'});
+    const roasRows=[['Amazon Ads','$31.5K spend',5.6],['Google Shopping','$48.2K spend',4.8],['Meta','$62.0K spend',3.1],['Pinterest','$9.8K spend',2.7],['TikTok','$24.6K spend',1.9]].map(([l,sub,v])=>bar(l,sub,v,v.toFixed(1)+'×',6,v<2.5?'risk':v<3?'watch':'ok'));
+    const turnRows=[['Beauty','29 days cover',8.9],['Apparel','34 days cover',6.2],['Footwear','41 days cover',4.1],['Home','52 days cover',3.2],['Electronics','118 days cover',2.4]].map(([l,sub,v])=>bar(l,sub,v,v.toFixed(1)+'×',10,v<3?'risk':v<5?'watch':'ok'));
+    const fulfillRows=[['Columbus, OH','98.1% on time',1.6],['Atlanta, GA','95.4% on time',1.9],['Newark, NJ','93.0% on time',2.1],['Reno, NV','82.6% on time',3.4]].map(([l,sub,v])=>bar(l,sub,v,v.toFixed(1)+' days',4,v>3?'risk':v>2?'watch':'ok'));
+    const F=[['Sessions with intent',232070],['Viewed product',151400],['Added to cart',61840],['Reached checkout',34120],['Purchased',19540]];
+    const funnel=F.map(([l,c],i)=>{const d=i?1-c/F[i-1][1]:0,worst=i===4;return {label:l,count:fmtN(c),pct:c/F[0][1]*100,bar:worst?'var(--color-accent-2)':'var(--color-accent)',hasDrop:i>=3,drop:i===3?Math.round(d*100)+'% leave between cart and checkout':Math.round(d*100)+'% leave at the shipping step · up from 34% before Sep 10',dropInk:worst?'var(--color-accent-2-700)':'var(--color-neutral-700)'};});
+    const activity=[['PS','Priya Shah','acknowledged the Reno DC fulfillment alert and assigned it to the West ops team.','12 minutes ago',1],['ML','Marcus Lee','exported SKU inventory exceptions (CSV, 37 rows).','1 hour ago',0],['AI','Auto-detect','flagged an anomaly: Amazon revenue 3.4σ below forecast.','Sep 14 · confirmed by 2 people',2],['DO','Dana Ortiz','saved the view “Holiday prep — Ops”.','3 hours ago',0],['JP','Jon Park','paused TikTok campaign “FW26 Teaser” after reading the ROAS insight.','Yesterday',1]].map(([i,w,t,when,tone])=>({initials:i,who:w,what:t,when,bg:tone===2?'var(--color-accent-2-100)':tone===1?'var(--color-accent-100)':'var(--color-neutral-200)',ink:tone===2?'var(--color-accent-2-800)':tone===1?'var(--color-accent-800)':'var(--color-neutral-800)'}));
+
+    const order=s.layouts[role],hid=s.hidden[role];
+    const move=(k,dir)=>this.setState(x=>{const L={...x.layouts},arr=[...L[role]],i=arr.indexOf(k),j=i+dir;if(j<0||j>=arr.length)return null;[arr[i],arr[j]]=[arr[j],arr[i]];L[role]=arr;return {layouts:L};});
+    const mods={};
+    Object.keys(MODS).forEach(k=>{mods[k]={order:order.indexOf(k),show:!hid[k],outline:s.customize?'1px dashed var(--color-accent)':'none',up:()=>move(k,-1),down:()=>move(k,1),hide:()=>this.setState(x=>({hidden:{...x.hidden,[role]:{...x.hidden[role],[k]:true}}}))};});
+    const hiddenMods=Object.keys(hid).filter(k=>hid[k]).map(k=>({label:MODS[k],restore:()=>this.setState(x=>({hidden:{...x.hidden,[role]:{...x.hidden[role],[k]:false}}}))}));
+
+    const q=s.q.trim().toLowerCase();
+    const base=empty?[]:SKUS.filter(r=>(!s.fWh.length||s.fWh.includes(r.wh))&&(!s.fCat.length||s.fCat.includes(r.cat))&&(!q||r.sku.toLowerCase().includes(q)||r.name.toLowerCase().includes(q)));
+    const inStatus=(r,st)=>st==='all'||(st==='action'?(r.status==='risk'||r.status==='low'):r.status===st);
+    const statusOpts=[['all','All'],['action','Needs action'],['over','Overstock'],['healthy','Healthy']].map(([k,l])=>({label:l,count:base.filter(r=>inStatus(r,k)).length,checked:s.status===k,pick:()=>this.setState({status:k})}));
+    const COLS=[['name','Product','left'],['cat','Category','left'],['wh','Warehouse','left'],['onHand','On hand','right'],['cover','Days of cover','right'],['turn','Turnover','right'],['inbound','Inbound PO','left'],['status','Status','left']];
+    const sevOrder={risk:0,low:1,over:2,healthy:3};
+    const rowsRaw=base.filter(r=>inStatus(r,s.status)).sort((a,b)=>{const k=s.sortKey;let va=k==='status'?sevOrder[a.status]:a[k],vb=k==='status'?sevOrder[b.status]:b[k];return (va>vb?1:va<vb?-1:0)*s.sortDir;});
+    const rows=rowsRaw.map(r=>{const m=SKU_ST[r.status],open=s.expanded===r.sku;return {...r,onHandText:fmtN(r.onHand),coverText:r.cover+' days',coverInk:r.cover<10?'var(--color-accent-2-700)':r.cover>90?'var(--color-neutral-700)':'var(--color-text)',turnText:r.turn.toFixed(1)+'×',tagClass:m.tag,statusLabel:m.label,hasAction:!!m.action,action:m.action,act:()=>this.flash(m.action+' drafted for '+r.sku),open,caret:open?'ph-caret-up':'ph-caret-down',toggle:()=>this.setState(x=>({expanded:x.expanded===r.sku?null:r.sku}))};});
+    const cols=COLS.map(([k,l,align])=>{const on=s.sortKey===k;return {k,label:l,align,ink:on?'var(--color-accent-700)':'inherit',icon:on?(s.sortDir>0?'ph-caret-up':'ph-caret-down'):'ph-caret-up-down',aria:on?(s.sortDir>0?'ascending':'descending'):'none',sort:()=>this.setState(x=>({sortKey:k,sortDir:x.sortKey===k?-x.sortDir:1}))};});
+    const tableEmpty=rows.length===0;
+    const nFilters=s.fWh.length+s.fCat.length;
+
+    const toggleIn=(key,v)=>()=>this.setState(x=>({[key]:x[key].includes(v)?x[key].filter(y=>y!==v):[...x[key],v]}));
+    const chip=(key,v)=>{const on=s[key].includes(v);return {label:v,on,toggle:toggleIn(key,v),bg:on?'var(--color-accent-100)':'transparent',ink:on?'var(--color-accent-800)':'var(--color-text)',border:on?'var(--color-accent)':'var(--color-divider)'};};
+    const filterGroups=[{label:'Warehouse',opts:['Columbus','Reno','Atlanta','Newark'].map(v=>chip('fWh',v))},{label:'Category',opts:['Apparel','Footwear','Home','Beauty','Electronics'].map(v=>chip('fCat',v))}];
+    const activeFilters=[...s.fWh.map(v=>({label:v,remove:toggleIn('fWh',v)})),...s.fCat.map(v=>({label:v,remove:toggleIn('fCat',v)}))];
+
+    const notifs=[['reno','ph-warning-diamond','var(--color-accent-2)','Reno DC is 1.4 days over its fulfillment SLA','Supply chain · 12 min ago'],['checkout','ph-warning-diamond','var(--color-accent-2)','Shipping-step abandonment jumped to 41%','Checkout · 2 h ago'],['oos','ph-trend-down','var(--color-accent-2)','37 SKUs projected to stock out within 14 days','Inventory · today, 06:00'],['shopify-growth','ph-trend-up','var(--color-accent)','Shopify revenue is running 18% ahead of plan','Weekly digest · Monday']].map(([id,icon,color,title,meta])=>({icon,color,title,meta,open:()=>this.setState({drawer:id,notifOpen:false})}));
+
+    const fmts=[['csv','CSV — table rows','Current filters and sort, '+rows.length+' rows'],['pdf','PDF — the brief and charts','Formatted for sharing in meetings'],['schedule','Scheduled email','Send this view every Monday at 08:00'],['link','Share link','Anyone in Northwind with access to this workspace']];
+    return {
+      rootRef:this.rootRef,
+      navLinks:['Overview','Analytics','Reports','Customers','Integrations','Settings'].map((l,i)=>({label:l,current:i===0?'page':undefined,color:i===0?'var(--color-text)':'var(--color-neutral-700)',bar:i===0?'var(--color-accent)':'transparent'})),
+      notifCount:4,notifOpen:s.notifOpen,notifs,toggleNotif:()=>this.setState(x=>({notifOpen:!x.notifOpen})),
+      roleName:ROLES.find(r=>r.k===role).label,
+      roles:ROLES.map(r=>({...r,checked:role===r.k,pick:()=>this.setState({role:r.k,info:null,hover:null})})),
+      customize:s.customize,customizeLabel:s.customize?'Done customizing':'Customize',customizeIcon:s.customize?'ph-check':'ph-squares-four',
+      toggleCustomize:()=>{const was=this.state.customize;this.setState({customize:!was});if(was)this.flash('Layout saved to “'+ROLES.find(r=>r.k===role).label+'” view');},
+      supportHint:s.customize?'Reorder or hide modules. Changes save to this view only.':'Arranged for the '+ROLES.find(r=>r.k===role).label.toLowerCase()+' view',
+      rangeLabel:range.label,rangeShort:range.short,
+      ranges:RANGES.map(r=>({k:r.k,checked:r.k===s.range,pick:()=>{this.setState({range:r.k,hover:null});this.busy(650);}})),
+      compare:s.compare,toggleCompare:()=>this.setState(x=>({compare:!x.compare})),
+      filtersOpen:s.filtersOpen,toggleFilters:()=>this.setState(x=>({filtersOpen:!x.filtersOpen})),filterGroups,activeFilters,filterCountLabel:nFilters?String(nFilters):'',
+      clearFilters:()=>this.setState({fWh:[],fCat:[]}),
+      refresh:()=>{this.busy(900);this.flash('Refreshed · all 6 sources current');},
+      openExport:()=>this.setState({exportOpen:true}),closeExport:()=>this.setState({exportOpen:false}),stop:e=>e.stopPropagation(),
+      exportFmts:fmts.map(([k,l,sub])=>({label:l,sub,checked:s.exportFmt===k,pick:()=>this.setState({exportFmt:k})})),
+      exportCta:s.exportFmt==='schedule'?'Schedule':s.exportFmt==='link'?'Copy link':'Export',
+      doExport:()=>{const f=s.exportFmt;this.setState({exportOpen:false});this.flash(f==='csv'?'Exported '+rows.length+' rows to CSV':f==='pdf'?'PDF is ready: Overview, '+range.label:f==='schedule'?'Scheduled every Monday, 08:00':'Link copied to clipboard');},
+      team:[['DO','Dana Ortiz (you)','VP Operations','Owner'],['PS','Priya Shah','Ops lead, West','Can edit'],['ML','Marcus Lee','Inventory analyst','Can edit'],['JP','Jon Park','Growth marketing','Can view']].map(([i,n,r,a])=>({initials:i,name:n,role:r,access:a})),
+      showBrief,brief:BRIEF[role],
+      loading,notLoading:!loading,skel4:[1,2,3,4],kpis:ST_ROLE,
+      insights,insightMeta:ROLE_INS[role].length+' signals from '+fmtN(14210)+' orders',
+      metricLabel:isRev?'revenue':'orders',
+      metrics:[['revenue','Revenue'],['orders','Orders']].map(([k,l])=>({label:l,checked:s.metric===k,pick:()=>this.setState({metric:k})})),
+      channel:s.channel,channelOpts:[{k:'all',label:'All channels'},...CH.map(c=>({k:c.k,label:c.label}))],onChannel:e=>this.setState({channel:e.target.value,hover:null}),
+      chart,chartState:{loading,error:!loading&&error,empty:!loading&&!error&&empty,ready:!loading&&!error&&!empty},
+      retry:()=>{this.busy(900);this.setState({retried:true});},
+      onChartMove:e=>{const b=e.currentTarget.getBoundingClientRect();const i=Math.max(0,Math.min(n-1,Math.round((e.clientX-b.left)/b.width*(n-1))));if(i!==this.state.hover)this.setState({hover:i});},
+      onChartLeave:e=>{if(e.pointerType==='mouse')this.setState({hover:null});},
+      openAnomaly:e=>{e.stopPropagation();this.setState({drawer:'amz-anomaly'});},
+      channelMix,roasRows,turnRows,fulfillRows,funnel,activity,roasTarget:50,turnTarget:50,slaTarget:50,
+      mods,hiddenMods,hasHidden:hiddenMods.length>0,
+      q:s.q,onSearch:e=>this.setState({q:e.target.value}),
+      statusOpts,cols,rows,sortKey:s.sortKey,onSortSelect:e=>this.setState({sortKey:e.target.value,sortDir:1}),
+      tableMeta:tableEmpty?'':'Showing '+rows.length+' of '+SKUS.length+' SKUs'+(nFilters?' · '+nFilters+' filter'+(nFilters>1?'s':'')+' applied':'')+' · sorted by '+COLS.find(c=>c[0]===s.sortKey)[1].toLowerCase(),
+      tableEmpty,showTable:!tableEmpty&&!s.narrow,showList:!tableEmpty&&s.narrow,
+      emptyTitle:empty?'No inventory synced yet':'No SKUs match',emptyBody:empty?'Connect NetSuite or your WMS to see stock positions. Until then, exceptions can\u2019t be calculated.':'Nothing matches “'+s.q+'” with the current status and filters. Try a broader search, or clear the filters.',
+      clearAll:()=>this.setState({q:'',fWh:[],fCat:[],status:'all'}),
+      drawerOpen:!!s.drawer,drawer,closeDrawer:()=>this.setState({drawer:null}),
+      markReviewed:()=>{const id=s.drawer;this.setState(x=>({reviewed:{...x.reviewed,[id]:true},drawer:null}));this.flash('Marked as reviewed. Your team can see this in activity.');},
+      hasToast:!!s.toast,toast:s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
